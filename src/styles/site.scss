@@ -78,26 +78,19 @@ nav { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 12px 32px;
   letter-spacing: -.03em;
   color: #fff;
 }
-.headline-text, .headline-ink {
+.headline-text {
   grid-area: 1 / 1;
   padding-block: .025em .1em;
 }
-// Watercolour ink painted by src/scripts/headline-ink.js. The script sets
-// background-image to a stack of pigment drops; it's clipped to the text and
-// masked with a paper grain so the colour pools unevenly, like real paint.
-$paper-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.022' numOctaves='4' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1.6 1.75'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
-.headline-ink {
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+// Watercolour ink canvas, added over the text by src/scripts/headline-ink.js.
+.has-ink { position: relative; }
+.headline-ink-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
-  visibility: hidden;
-  -webkit-mask-image: $paper-grain;
-  mask-image: $paper-grain;
-  -webkit-mask-size: 320px;
-  mask-size: 320px;
 }
-.headline-ink.active { visibility: visible; }
 .intro-copy { display: grid; grid-template-columns: 2fr .972fr; align-items: start; gap: 24px; margin-top: 32px; font-weight: 600; }
 .intro-copy p { font-size: 24px; line-height: 32px; }
 .under { width: fit-content; font-size: 18px; line-height: 28px; font-weight: 600; }

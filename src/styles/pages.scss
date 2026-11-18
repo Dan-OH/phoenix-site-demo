@@ -6,7 +6,7 @@ button { border: 0; }
 .page-intro { display: grid; justify-items: start; gap: 32px; padding-block: 80px; }
 .page-title { font-size: clamp(56px,7.78vw,112px); line-height: 1.04; letter-spacing: -.03em; font-weight: 700; }
 .page-headline { position: relative; display: grid; }
-.page-headline .headline-text, .page-headline .headline-ink { grid-area: 1 / 1; padding-bottom: .1em; }
+.page-headline .headline-text { grid-area: 1 / 1; padding-bottom: .1em; }
 .page-lead { max-width: 856px; font-size: 24px; line-height: 32px; font-weight: 600; }
 .page-intro > .under { margin-bottom: -8px; }
 .work-list { padding-bottom: 80px; }
