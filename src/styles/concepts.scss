@@ -1,0 +1,80 @@
+// Concepts page (concepts.html): component ideas not yet used on the site.
+// Page layout comes from components.scss; each concept's styles live here.
+
+// ── Sliding underline nav ────────────────────────────────────────────────
+
+$underline-height: 2px;
+$underline-gap: 4px;
+
+// A header laid out like .site-header, without hooking into the real header's scripts.
+.concept-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+
+  .logo {
+    flex: 0 0 auto;
+
+    img {
+      width: 96px;
+      height: auto;
+    }
+  }
+}
+
+.nav-underline {
+  position: relative;
+  justify-content: flex-end;
+
+  a {
+    padding-block: 4px;
+  }
+
+  // The current page link is lime, matching its underline.
+  a[aria-current='page'] {
+    color: var(--lime);
+  }
+}
+
+.nav-underline-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--w, 0);
+  height: $underline-height;
+  border-radius: $underline-height;
+  background: var(--lime);
+  transform: translate(var(--x, 0), calc(var(--y, 0) + #{$underline-gap}));
+  opacity: 0;
+  pointer-events: none;
+
+  &.visible {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .nav-underline-bar {
+    transition:
+      transform 0.4s cubic-bezier(0.22, 0.75, 0.25, 1),
+      width 0.4s cubic-bezier(0.22, 0.75, 0.25, 1),
+      opacity 0.25s ease;
+
+    &.instant {
+      transition: opacity 0.25s ease;
+    }
+  }
+}
+
+@media (max-width: 700px) {
+  .concept-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nav-underline {
+    justify-content: flex-start;
+  }
+}
