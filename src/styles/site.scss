@@ -1,6 +1,6 @@
 @font-face {
   font-family: Inter;
-  src: url(assets/inter.woff2) format("woff2");
+  src: url(/assets/inter.woff2) format("woff2");
   font-weight: 400 700;
   font-display: swap;
 }
@@ -422,7 +422,7 @@ nav { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 12px 32px;
 .work-cursor {
   position: fixed; top: 0; left: 0; width: 48px; height: 48px;
   z-index: 9999; pointer-events: none; visibility: hidden;
-  background: url(assets/cursor.png) center / contain no-repeat;
+  background: url(/assets/cursor.png) center / contain no-repeat;
   contain: layout style paint;
 }
 .work-card .media > * { pointer-events: none; }

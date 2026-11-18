@@ -78,7 +78,7 @@ for (const preview of document.querySelectorAll('[data-work]')) {
 
 if (document.querySelector('[data-hero]')) {
 const hero = document.querySelector('[data-hero]');
-const clips = [1, 2, 3].map(number => `assets/WhpClip${number}.png`);
+const clips = [1, 2, 3].map(number => `/assets/WhpClip${number}.png`);
 let heroTimer = 0;
 let heroVisible = false;
 let heroFrame = 0;
