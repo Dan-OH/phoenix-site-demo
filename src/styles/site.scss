@@ -66,6 +66,12 @@ nav { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 12px 32px;
   border-radius: 4px;
 }
 :is(.under, .footer-links a):is(:hover, :focus-visible, .pointer-over) { color: var(--lime); }
+// Lime underline that grows from the left under the link text.
+.link-label {
+  background: linear-gradient(var(--lime), var(--lime)) no-repeat 0 100% / 0 2px;
+  padding-bottom: 2px;
+}
+:is(.under, .footer-links a):is(:hover, :focus-visible, .pointer-over) .link-label { background-size: 100% 2px; }
 .explore-arrow { display: inline-block; }
 .intro { padding-block: clamp(40px, 4.45vw, 64px); }
 .intro h1 {
@@ -182,10 +188,13 @@ nav { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 12px 32px;
 @media (prefers-reduced-motion: no-preference) {
   .button { transition: transform .18s ease; }
   :is(.under, .footer-links a) { transition: color .3s ease; }
+  .link-label { transition: background-size .35s cubic-bezier(.22,.75,.25,1); }
   .button-arrow, .caption-arrow {
     transition: transform .32s cubic-bezier(.22,.75,.25,1);
   }
   :is(.button, .under, .footer-links a):is(:hover, :focus-visible, .pointer-over) .button-arrow { transform: translate(3px, -3px); }
+  // A leading arrow (e.g. "← All work") points back, so it nudges left instead.
+  :is(.button, .under, .footer-links a):is(:hover, :focus-visible, .pointer-over) .button-arrow:first-child { transform: translateX(-3px); }
   .button:active { transform: scale(.97); }
   .caption-arrow {
     transform: translate(-4px, 4px);
