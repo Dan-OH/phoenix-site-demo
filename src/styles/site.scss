@@ -127,26 +127,14 @@ nav { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 12px 32px;
 .button { position: relative; isolation: isolate; align-items: center; gap: .4em; }
 .button { overflow: hidden; }
 .button > :not(.button-fill) { position: relative; z-index: 1; }
+// Ink fill, painted by src/scripts/button-ink.js.
 .button-fill {
   position: absolute;
   inset: 0;
   z-index: 0;
   border-radius: inherit;
   pointer-events: none;
-  background: linear-gradient(105deg, #f6f2c4 0%, var(--lime) 36%, #69ca6c 65%, var(--teal) 100%);
-  clip-path: circle(0px at var(--fill-x, 50%) var(--fill-y, 50%));
 }
-.button-fill::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: var(--lime);
-  opacity: 0;
-}
-.button:is(:hover, :focus-visible, .pointer-over) .button-fill {
-  clip-path: circle(var(--fill-radius, 400px) at var(--fill-x, 50%) var(--fill-y, 50%));
-}
-.button:is(:hover, :focus-visible, .pointer-over) .button-fill::after { opacity: 1; }
 .button-arrow { display: inline-block; }
 
 .split { display: grid; grid-template-columns: 416fr 856fr; gap: 24px; }
@@ -192,14 +180,7 @@ nav { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 12px 32px;
 .footer-legal { color: #ced4da; font-size: 14px; display: flex; gap: 32px; flex-wrap: wrap; }
 
 @media (prefers-reduced-motion: no-preference) {
-  .button-fill { transition: clip-path .55s cubic-bezier(.22,.75,.25,1); }
-  .button-fill::after { transition: opacity .3s ease; }
-  .button:is(:hover, :focus-visible, .pointer-over) .button-fill::after {
-    transition: opacity .65s ease .2s;
-  }
-  .button {
-    transition: color .22s ease, transform .18s ease;
-  }
+  .button { transition: transform .18s ease; }
   :is(.under, .footer-links a) { transition: color .3s ease; }
   .button-arrow, .caption-arrow {
     transition: transform .32s cubic-bezier(.22,.75,.25,1);

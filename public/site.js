@@ -339,32 +339,6 @@ for (const link of document.querySelectorAll('a')) {
 }
 
 
-for (const button of document.querySelectorAll('.button')) {
-  const fill = document.createElement('span');
-  fill.className = 'button-fill';
-  fill.setAttribute('aria-hidden', 'true');
-  button.prepend(fill);
-
-  function setOrigin(x, y, width, height) {
-    const radius = Math.hypot(Math.max(x, width - x), Math.max(y, height - y));
-    button.style.setProperty('--fill-x', `${x}px`);
-    button.style.setProperty('--fill-y', `${y}px`);
-    button.style.setProperty('--fill-radius', `${Math.ceil(radius) + 2}px`);
-  }
-
-  button.addEventListener('pointerenter', event => {
-    const bounds = button.getBoundingClientRect();
-    const x = Math.max(0, Math.min(bounds.width, event.clientX - bounds.left));
-    const y = Math.max(0, Math.min(bounds.height, event.clientY - bounds.top));
-    setOrigin(x, y, bounds.width, bounds.height);
-  });
-  button.addEventListener('focus', () => {
-    if (!button.matches(':focus-visible')) return;
-    const bounds = button.getBoundingClientRect();
-    setOrigin(bounds.width / 2, bounds.height / 2, bounds.width, bounds.height);
-  });
-}
-
 function sizeNavGradients() {
   for (const link of document.querySelectorAll('.site-header .nav-link')) {
     const row = link.querySelector('.nav-text-repeat');
