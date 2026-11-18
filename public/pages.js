@@ -58,10 +58,6 @@ siteNavigation.addEventListener('click', event => {
 });
 mobileMenuQuery.addEventListener('change', () => closeMenu(true));
 
-for (const title of document.querySelectorAll('.page-headline')) {
-  setupHeadlineTrail(title);
-}
-
 const filters = document.querySelector('.filters');
 if (filters) {
   const cards = [...document.querySelectorAll('[data-project]')];
