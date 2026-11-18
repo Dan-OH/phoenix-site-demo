@@ -6,7 +6,7 @@ import { resolve } from 'node:path';
 const pages = Object.fromEntries(
   readdirSync(import.meta.dirname)
     .filter((f) => f.endsWith('.html'))
-    .map((f) => [f.replace(/\.html$/, ''), resolve(import.meta.dirname, f)])
+    .map((f) => [f.replace(/\.html$/, ''), resolve(import.meta.dirname, f)]),
 );
 
 export default defineConfig({

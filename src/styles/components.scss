@@ -8,7 +8,7 @@ $mobile: 700px;
 .kit-title {
   font-size: clamp(40px, 5.5vw, 80px);
   line-height: 1.08;
-  letter-spacing: -.03em;
+  letter-spacing: -0.03em;
 }
 
 .kit-toc ol {
@@ -36,10 +36,14 @@ $mobile: 700px;
   h2 {
     font-size: clamp(30px, 3.2vw, 40px);
     line-height: 1.3;
-    letter-spacing: -.03em;
+    letter-spacing: -0.03em;
   }
 
-  p:not(.eyebrow) { color: #ced4da; font-size: 18px; line-height: 28px; }
+  p:not(.eyebrow) {
+    color: #ced4da;
+    font-size: 18px;
+    line-height: 28px;
+  }
 }
 
 .kit-grid {
@@ -55,7 +59,9 @@ $mobile: 700px;
   gap: 12px;
   min-width: 0;
 
-  &.kit-wide { grid-column: 1 / -1; }
+  &.kit-wide {
+    grid-column: 1 / -1;
+  }
 
   figcaption {
     display: grid;
@@ -64,10 +70,15 @@ $mobile: 700px;
     line-height: 20px;
     color: #ced4da;
 
-    code { color: var(--lime); }
+    code {
+      color: var(--lime);
+    }
   }
 
-  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; }
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 13px;
+  }
 }
 
 .kit-stage {
@@ -80,13 +91,21 @@ $mobile: 700px;
   background: $stage-bg;
   overflow: visible;
 
-  &.kit-dark { background: #000; }
+  &.kit-dark {
+    background: #000;
+  }
 
   // The demo dropdown needs room to open.
-  &:has(.multi-select[open]) { min-height: 300px; align-content: start; }
+  &:has(.multi-select[open]) {
+    min-height: 300px;
+    align-content: start;
+  }
 }
 
-.kit-pointer { color: #ced4da; font-weight: 600; }
+.kit-pointer {
+  color: #ced4da;
+  font-weight: 600;
+}
 
 // Remove page-level spacing from components shown out of context.
 .kit-flat {
@@ -97,18 +116,33 @@ $mobile: 700px;
 }
 
 .kit-stage {
-  > .intro { padding: 0; }
-  > .services { width: 100%; }
+  > .intro {
+    padding: 0;
+  }
+  > .services {
+    width: 100%;
+  }
   > .project-overview,
   > .map-link,
   > .clients,
   > .work-row,
-  > .filter-field { width: 100%; }
-  > .clients { padding-block: 16px; border-radius: $radius; }
-  > .footer-links { grid-template-columns: 1fr; }
+  > .filter-field {
+    width: 100%;
+  }
+  > .clients {
+    padding-block: 16px;
+    border-radius: $radius;
+  }
+  > .footer-links {
+    grid-template-columns: 1fr;
+  }
 }
 
-.kit-media { width: 100%; aspect-ratio: 3 / 2; border-radius: 4px; }
+.kit-media {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  border-radius: 4px;
+}
 
 .kit-form {
   width: 100%;
@@ -117,6 +151,10 @@ $mobile: 700px;
 }
 
 @media (max-width: $mobile) {
-  .kit-section { padding-block: 40px; }
-  .kit-stage { padding: 20px; }
+  .kit-section {
+    padding-block: 40px;
+  }
+  .kit-stage {
+    padding: 20px;
+  }
 }

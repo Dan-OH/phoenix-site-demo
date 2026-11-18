@@ -19,21 +19,21 @@ const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 const hoverPointer = matchMedia('(any-hover: hover)');
 
 const SETTINGS = {
-  simScale: .5,      // simulation pixels per CSS pixel
-  stepRate: 120,     // simulation steps per second
-  maxSteps: 8,       // per frame; beyond this the sim slows rather than stalls the page
-  follow: 55,        // ms for the brush to catch up with the pointer (smooths jitter)
-  radius: .3,        // brush radius, × the headline's font size
-  deposit: .9,       // ink laid per pass of the brush
-  reach: 3,          // spread sample distance in sim pixels (higher = spreads further)
-  spread: .2,        // spread rate per step (must stay below .25)
-  flow: 10,          // drift speed of the flow field, CSS px per second
-  flowSize: 1.2,     // size of flow eddies, × font size
-  life: 1.4,         // seconds: how quickly pigment fades
-  floor: .08,        // pigment removed per second, so ink fully disappears
-  dry: .7,           // seconds: how quickly fresh dark green turns lime
-  fadeOut: 4.5,      // seconds after the last stroke before the sim stops
-  edge: 6,           // strength of the tide line where wet ink meets dry paper
+  simScale: 0.5, // simulation pixels per CSS pixel
+  stepRate: 120, // simulation steps per second
+  maxSteps: 8, // per frame; beyond this the sim slows rather than stalls the page
+  follow: 55, // ms for the brush to catch up with the pointer (smooths jitter)
+  radius: 0.3, // brush radius, × the headline's font size
+  deposit: 0.9, // ink laid per pass of the brush
+  reach: 3, // spread sample distance in sim pixels (higher = spreads further)
+  spread: 0.2, // spread rate per step (must stay below .25)
+  flow: 10, // drift speed of the flow field, CSS px per second
+  flowSize: 1.2, // size of flow eddies, × font size
+  life: 1.4, // seconds: how quickly pigment fades
+  floor: 0.08, // pigment removed per second, so ink fully disappears
+  dry: 0.7, // seconds: how quickly fresh dark green turns lime
+  fadeOut: 4.5, // seconds after the last stroke before the sim stops
+  edge: 6, // strength of the tide line where wet ink meets dry paper
 };
 
 const RAMP = { dark: '#06b69f', mid: '#69ca6c', light: '#c3d529' };
@@ -135,20 +135,26 @@ void main() {
   outColor = vec4(colour * alpha, alpha);
 }`;
 
-const hexToVec = hex => [1, 3, 5].map(i => Number.parseInt(hex.slice(i, i + 2), 16) / 255);
+const hexToVec = (hex) =>
+  [1, 3, 5].map((i) => Number.parseInt(hex.slice(i, i + 2), 16) / 255);
 
 function compile(gl, vertexSource, fragmentSource) {
   const program = gl.createProgram();
-  for (const [type, source] of [[gl.VERTEX_SHADER, vertexSource], [gl.FRAGMENT_SHADER, fragmentSource]]) {
+  for (const [type, source] of [
+    [gl.VERTEX_SHADER, vertexSource],
+    [gl.FRAGMENT_SHADER, fragmentSource],
+  ]) {
     const shader = gl.createShader(type);
     gl.shaderSource(shader, source);
     gl.compileShader(shader);
-    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(shader));
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS))
+      throw new Error(gl.getShaderInfoLog(shader));
     gl.attachShader(program, shader);
   }
   gl.bindAttribLocation(program, 0, 'aPos');
   gl.linkProgram(program);
-  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(program));
+  if (!gl.getProgramParameter(program, gl.LINK_STATUS))
+    throw new Error(gl.getProgramInfoLog(program));
   const uniforms = {};
   const count = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
   for (let i = 0; i < count; i++) {
@@ -161,14 +167,30 @@ function compile(gl, vertexSource, fragmentSource) {
 function createTarget(gl, width, height) {
   const texture = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, texture);
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA16F, width, height, 0, gl.RGBA, gl.HALF_FLOAT, null);
+  gl.texImage2D(
+    gl.TEXTURE_2D,
+    0,
+    gl.RGBA16F,
+    width,
+    height,
+    0,
+    gl.RGBA,
+    gl.HALF_FLOAT,
+    null,
+  );
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
   const framebuffer = gl.createFramebuffer();
   gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
-  gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+  gl.framebufferTexture2D(
+    gl.FRAMEBUFFER,
+    gl.COLOR_ATTACHMENT0,
+    gl.TEXTURE_2D,
+    texture,
+    0,
+  );
   gl.clearColor(0, 0, 0, 0);
   gl.clear(gl.COLOR_BUFFER_BIT);
   return { texture, framebuffer };
@@ -198,7 +220,11 @@ function drawStencil(context, source, box, dpr) {
         const rect = range.getClientRects()[0];
         if (rect) {
           const metrics = context.measureText(character);
-          context.fillText(character, rect.left - box.left, rect.bottom - box.top - metrics.fontBoundingBoxDescent);
+          context.fillText(
+            character,
+            rect.left - box.left,
+            rect.bottom - box.top - metrics.fontBoundingBoxDescent,
+          );
         }
       }
       i += size - 1;
@@ -217,8 +243,17 @@ function setupHeadlineInk(headline) {
   const canvas = document.createElement('canvas');
   canvas.className = 'headline-ink-canvas';
   canvas.setAttribute('aria-hidden', 'true');
-  const gl = canvas.getContext('webgl2', { premultipliedAlpha: true, antialias: false });
-  if (!gl || !(gl.getExtension('EXT_color_buffer_float') || gl.getExtension('EXT_color_buffer_half_float'))) {
+  const gl = canvas.getContext('webgl2', {
+    premultipliedAlpha: true,
+    antialias: false,
+  });
+  if (
+    !gl ||
+    !(
+      gl.getExtension('EXT_color_buffer_float') ||
+      gl.getExtension('EXT_color_buffer_half_float')
+    )
+  ) {
     return false;
   }
 
@@ -232,7 +267,11 @@ function setupHeadlineInk(headline) {
   }
 
   gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  gl.bufferData(
+    gl.ARRAY_BUFFER,
+    new Float32Array([-1, -1, 3, -1, -1, 3]),
+    gl.STATIC_DRAW,
+  );
   gl.enableVertexAttribArray(0);
   gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
 
@@ -268,7 +307,14 @@ function setupHeadlineInk(headline) {
     drawStencil(stencilContext, source, box, dpr);
     gl.bindTexture(gl.TEXTURE_2D, stencilTexture);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, stencilCanvas);
+    gl.texImage2D(
+      gl.TEXTURE_2D,
+      0,
+      gl.RGBA,
+      gl.RGBA,
+      gl.UNSIGNED_BYTE,
+      stencilCanvas,
+    );
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
   }
 
@@ -276,15 +322,24 @@ function setupHeadlineInk(headline) {
     const box = canvas.getBoundingClientRect();
     dpr = Math.min(devicePixelRatio || 1, 2);
     fontSize = Number.parseFloat(getComputedStyle(source).fontSize);
-    canvas.width = stencilCanvas.width = Math.max(1, Math.round(box.width * dpr));
-    canvas.height = stencilCanvas.height = Math.max(1, Math.round(box.height * dpr));
+    canvas.width = stencilCanvas.width = Math.max(
+      1,
+      Math.round(box.width * dpr),
+    );
+    canvas.height = stencilCanvas.height = Math.max(
+      1,
+      Math.round(box.height * dpr),
+    );
     simWidth = Math.max(1, Math.round(box.width * SETTINGS.simScale));
     simHeight = Math.max(1, Math.round(box.height * SETTINGS.simScale));
     for (const target of targets) {
       gl.deleteTexture(target.texture);
       gl.deleteFramebuffer(target.framebuffer);
     }
-    targets = [createTarget(gl, simWidth, simHeight), createTarget(gl, simWidth, simHeight)];
+    targets = [
+      createTarget(gl, simWidth, simHeight),
+      createTarget(gl, simWidth, simHeight),
+    ];
     updateStencil();
     stop();
   }
@@ -316,7 +371,10 @@ function setupHeadlineInk(headline) {
     gl.uniform1f(u.uReach, SETTINGS.reach);
     gl.uniform1f(u.uSpread, SETTINGS.spread);
     gl.uniform1f(u.uFlow, SETTINGS.flow * SETTINGS.simScale);
-    gl.uniform1f(u.uFlowScale, 1 / (fontSize * SETTINGS.flowSize * SETTINGS.simScale));
+    gl.uniform1f(
+      u.uFlowScale,
+      1 / (fontSize * SETTINGS.flowSize * SETTINGS.simScale),
+    );
     gl.uniform1f(u.uLife, SETTINGS.life);
     gl.uniform1f(u.uDry, SETTINGS.dry);
     gl.uniform1f(u.uFloor, SETTINGS.floor);
@@ -360,9 +418,11 @@ function setupHeadlineInk(headline) {
       const from = previous || brush;
       const length = Math.hypot(brush.x - from.x, brush.y - from.y);
       const radius = fontSize * SETTINGS.radius * SETTINGS.simScale;
-      if (length > .3 || !previous) {
+      if (length > 0.3 || !previous) {
         // Scaled by distance so slow and fast strokes lay the same amount of ink per area.
-        deposit = SETTINGS.deposit * Math.min(1, Math.max(length, .3 * radius) / radius);
+        deposit =
+          SETTINGS.deposit *
+          Math.min(1, Math.max(length, 0.3 * radius) / radius);
         segment = [from.x, from.y, brush.x, brush.y];
         lastStroke = clock;
       }
@@ -436,7 +496,7 @@ function setupHeadlineInk(headline) {
   headline.addEventListener('pointercancel', reset);
   reducedMotion.addEventListener('change', reset);
   hoverPointer.addEventListener('change', reset);
-  canvas.addEventListener('webglcontextlost', event => {
+  canvas.addEventListener('webglcontextlost', (event) => {
     event.preventDefault();
     reset();
   });
@@ -463,7 +523,7 @@ if (hero && (reducedMotion.matches || !heroThinking)) {
     ready = true;
     setupHeadlineInk(hero);
   };
-  heroThinking.addEventListener('animationend', event => {
+  heroThinking.addEventListener('animationend', (event) => {
     if (event.animationName === 'thinking-opens') enable();
   });
   setTimeout(enable, 1650);

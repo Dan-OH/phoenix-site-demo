@@ -12,17 +12,17 @@
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
 const SETTINGS = {
-  fill: 1100,     // ms for the whole fill, including the dark green turning lime
-  spread: .45,    // share of the fill spent spreading; the rest is the colour settling
-  darkCore: .7,   // how far the dark green reaches, as a share of the ink's radius
-  drain: 450,     // ms for the lime to shrink away
+  fill: 1100, // ms for the whole fill, including the dark green turning lime
+  spread: 0.45, // share of the fill spent spreading; the rest is the colour settling
+  darkCore: 0.7, // how far the dark green reaches, as a share of the ink's radius
+  drain: 450, // ms for the lime to shrink away
 };
 
 const DARK = 'var(--teal)';
 const LIGHT = 'var(--lime)';
 
-const easeOut = t => 1 - (1 - t) ** 3;
-const easeInOut = t => t < .5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
+const easeOut = (t) => 1 - (1 - t) ** 3;
+const easeInOut = (t) => (t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2);
 
 function setupButtonInk(button) {
   const fill = document.createElement('span');
@@ -32,7 +32,7 @@ function setupButtonInk(button) {
 
   // 'empty' → 'filling' → 'full' → 'draining' → 'empty'
   let state = 'empty';
-  let progress = 0;         // position within the current fill or drain, 0–1
+  let progress = 0; // position within the current fill or drain, 0–1
   let origin = { x: 0, y: 0 };
   let enterPoint = { x: 0, y: 0 };
   let exitPoint = { x: 0, y: 0 };
@@ -59,12 +59,19 @@ function setupButtonInk(button) {
   function reach() {
     const width = button.offsetWidth;
     const height = button.offsetHeight;
-    return Math.hypot(Math.max(origin.x, width - origin.x), Math.max(origin.y, height - origin.y)) + 2;
+    return (
+      Math.hypot(
+        Math.max(origin.x, width - origin.x),
+        Math.max(origin.y, height - origin.y),
+      ) + 2
+    );
   }
 
   function circle(radius, stops) {
-    return `radial-gradient(circle at ${origin.x}px ${origin.y}px, ${stops}, `
-      + `${LIGHT} ${Math.max(0, radius - 1).toFixed(1)}px, transparent ${radius.toFixed(1)}px)`;
+    return (
+      `radial-gradient(circle at ${origin.x}px ${origin.y}px, ${stops}, ` +
+      `${LIGHT} ${Math.max(0, radius - 1).toFixed(1)}px, transparent ${radius.toFixed(1)}px)`
+    );
   }
 
   function paint() {
@@ -78,7 +85,10 @@ function setupButtonInk(button) {
       const radius = reach() * easeOut(Math.min(1, progress / SETTINGS.spread));
       const darkness = Math.round((1 - easeInOut(progress)) * 100);
       const centreColour = `color-mix(in oklab, ${DARK} ${darkness}%, ${LIGHT})`;
-      fill.style.backgroundImage = circle(radius, `${centreColour} 0px, ${LIGHT} ${(radius * SETTINGS.darkCore).toFixed(1)}px`);
+      fill.style.backgroundImage = circle(
+        radius,
+        `${centreColour} 0px, ${LIGHT} ${(radius * SETTINGS.darkCore).toFixed(1)}px`,
+      );
     } else {
       // Draining: plain lime shrinking toward the exit point.
       const radius = reach() * easeInOut(progress);
@@ -109,7 +119,10 @@ function setupButtonInk(button) {
     } else if (state === 'draining') {
       // Coming back mid-drain grows the lime back out; otherwise keep shrinking.
       const direction = wanted() ? 1 : -1;
-      progress = Math.max(0, Math.min(1, progress + direction * elapsed / SETTINGS.drain));
+      progress = Math.max(
+        0,
+        Math.min(1, progress + (direction * elapsed) / SETTINGS.drain),
+      );
       if (progress === 0) state = 'empty';
       if (progress === 1) state = 'full';
     }
@@ -130,16 +143,17 @@ function setupButtonInk(button) {
       return;
     }
     settle();
-    if (!frame && (state === 'filling' || state === 'draining')) frame = requestAnimationFrame(tick);
+    if (!frame && (state === 'filling' || state === 'draining'))
+      frame = requestAnimationFrame(tick);
   }
 
-  button.addEventListener('pointerenter', event => {
+  button.addEventListener('pointerenter', (event) => {
     if (event.pointerType === 'touch') return;
     hovered = true;
     enterPoint = pointFrom(event);
     update();
   });
-  button.addEventListener('pointerleave', event => {
+  button.addEventListener('pointerleave', (event) => {
     if (!hovered) return;
     hovered = false;
     exitPoint = pointFrom(event);

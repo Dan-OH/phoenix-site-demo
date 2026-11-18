@@ -14,7 +14,8 @@
       root.style.setProperty('--page-intro-delay', '.16s');
       root.classList.add('page-entering');
     }
-    for (const parameter of ['_pg', '_px', '_py']) pageURL.searchParams.delete(parameter);
+    for (const parameter of ['_pg', '_px', '_py'])
+      pageURL.searchParams.delete(parameter);
     try {
       history.replaceState(history.state, '', pageURL.href);
     } catch {
@@ -31,18 +32,46 @@
     location.assign(destination);
   }
 
-  document.addEventListener('click', event => {
-    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  document.addEventListener('click', (event) => {
+    if (
+      event.defaultPrevented ||
+      event.button !== 0 ||
+      event.metaKey ||
+      event.ctrlKey ||
+      event.shiftKey ||
+      event.altKey
+    )
+      return;
     const link = event.target.closest('a[href]');
-    if (!link || link.hasAttribute('download') || (link.target && link.target !== '_self')) return;
+    if (
+      !link ||
+      link.hasAttribute('download') ||
+      (link.target && link.target !== '_self')
+    )
+      return;
     const destination = new URL(link.href, location.href);
-    if (destination.origin !== location.origin || destination.protocol !== location.protocol) return;
+    if (
+      destination.origin !== location.origin ||
+      destination.protocol !== location.protocol
+    )
+      return;
     if (!['http:', 'https:', 'file:'].includes(destination.protocol)) return;
     if (!destination.pathname.endsWith('.html')) return;
-    const directory = location.pathname.slice(0, location.pathname.lastIndexOf('/') + 1);
-    if (destination.protocol === 'file:' && !destination.pathname.startsWith(directory)) return;
+    const directory = location.pathname.slice(
+      0,
+      location.pathname.lastIndexOf('/') + 1,
+    );
+    if (
+      destination.protocol === 'file:' &&
+      !destination.pathname.startsWith(directory)
+    )
+      return;
     // In-page section links retain their normal scrolling behavior.
-    if (destination.pathname === location.pathname && destination.search === location.search) return;
+    if (
+      destination.pathname === location.pathname &&
+      destination.search === location.search
+    )
+      return;
     if (motionPreference.matches) return;
 
     event.preventDefault();
@@ -54,7 +83,7 @@
     navigationTimer = setTimeout(navigate, 560);
   });
 
-  window.addEventListener('pageshow', event => {
+  window.addEventListener('pageshow', (event) => {
     if (event.persisted) {
       clearTimeout(navigationTimer);
       pendingDestination = null;
