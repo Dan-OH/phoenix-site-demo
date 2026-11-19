@@ -62,20 +62,9 @@ button {
   gap: 8px;
   font-size: 14px;
 }
-.select-wrap {
-  display: block;
-  position: relative;
-}
-.select-wrap img {
-  position: absolute;
-  right: 16px;
-  top: 18px;
-  pointer-events: none;
-}
 select,
 input,
-textarea,
-.industry-select > summary {
+textarea {
   width: 100%;
   background: #2c3236;
   color: var(--fg);
@@ -110,49 +99,8 @@ legend {
   padding: 0;
   margin-bottom: 8px;
 }
-.industry-select {
-  position: relative;
-}
-.industry-select summary {
-  list-style: none;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
 summary::-webkit-details-marker {
   display: none;
-}
-.industry-options {
-  position: absolute;
-  top: calc(100% + 8px);
-  inset-inline: 0;
-  background: #343a40;
-  border: 1px solid #6c757d;
-  border-radius: 4px;
-  z-index: 12;
-  padding: 12px;
-  display: grid;
-  gap: 3px;
-  box-shadow: 0 12px 32px #0005;
-}
-.industry-options label {
-  padding: 7px;
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-.industry-options input {
-  width: 16px;
-  height: 16px;
-  min-height: auto;
-  accent-color: var(--lime);
-}
-.filter-summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  margin-block: 24px 12px;
 }
 .text-reset {
   background: none;
@@ -926,12 +874,10 @@ body {
   margin-bottom: 6px;
   padding-bottom: 16px;
 }
-.nav-ripple-face {
+// Nav link letters stay on one line.
+.nav-link .ripple-text {
   display: inline-block;
-}
-.nav-ripple-letter {
-  display: inline-block;
-  transform-origin: center 65%;
+  white-space: nowrap;
 }
 .nav-link:is(:hover, :focus-visible, .pointer-over) {
   color: var(--lime);

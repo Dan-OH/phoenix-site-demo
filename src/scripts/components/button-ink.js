@@ -9,7 +9,7 @@
 //
 // Keyboard focus fills and drains from the centre.
 
-const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+import { reducedMotion } from '../lib/media-queries.js';
 
 const SETTINGS = {
   fill: 1100, // ms for the whole fill, including the dark green turning lime
@@ -182,6 +182,8 @@ function setupButtonInk(button) {
   });
 }
 
-for (const button of document.querySelectorAll('.button')) {
-  setupButtonInk(button);
+export function initButtonInk() {
+  for (const button of document.querySelectorAll('.button')) {
+    setupButtonInk(button);
+  }
 }

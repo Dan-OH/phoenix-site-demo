@@ -15,8 +15,7 @@
 // Ink is stored per pixel as: r = amount of pigment, g = how much of it is still fresh.
 // Fresh ink is dark green; as it dries and thins out it turns lime.
 
-const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-const hoverPointer = matchMedia('(any-hover: hover)');
+import { hoverPointer, reducedMotion } from '../lib/media-queries.js';
 
 const SETTINGS = {
   simScale: 0.5, // simulation pixels per CSS pixel
@@ -506,17 +505,20 @@ function setupHeadlineInk(headline) {
   return true;
 }
 
-for (const headline of document.querySelectorAll('.page-headline')) {
-  setupHeadlineInk(headline);
-}
+export function initHeadlineInk() {
+  for (const headline of document.querySelectorAll('.page-headline')) {
+    setupHeadlineInk(headline);
+  }
 
-// The home hero waits for its intro animation to finish, so the letters are
-// traced in their final positions.
-const hero = document.getElementById('headline');
-const heroThinking = hero?.querySelector('.hero-thinking');
-if (hero && (reducedMotion.matches || !heroThinking)) {
-  setupHeadlineInk(hero);
-} else if (hero) {
+  // The home hero waits for its intro animation to finish, so the letters are
+  // traced in their final positions.
+  const hero = document.getElementById('headline');
+  const heroThinking = hero?.querySelector('.hero-thinking');
+  if (!hero) return;
+  if (reducedMotion.matches || !heroThinking) {
+    setupHeadlineInk(hero);
+    return;
+  }
   let ready = false;
   const enable = () => {
     if (ready) return;

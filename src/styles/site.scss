@@ -116,22 +116,6 @@ nav {
   font-weight: 600;
   line-height: 28px;
 }
-.nav-text {
-  position: relative;
-  display: block;
-  overflow: hidden;
-  white-space: nowrap;
-}
-.nav-text span {
-  display: inline-block;
-}
-.nav-text .nav-text-repeat {
-  position: absolute;
-  inset: 0;
-}
-.nav-text-repeat > span {
-  transform: translateY(120%);
-}
 .service-label {
   background: linear-gradient(var(--lime), var(--lime)) left bottom / 0 2px
     no-repeat;
@@ -562,19 +546,6 @@ nav {
   .services a {
     transition: color 0.28s ease;
   }
-  .nav-text span > span {
-    transition: transform 0.65s cubic-bezier(0.165, 0.84, 0.44, 1)
-      var(--letter-delay);
-  }
-  a:is(:hover, :focus-visible, .pointer-over) .nav-text span > span {
-    transition-duration: 0.8s;
-  }
-  a:is(:hover, :focus-visible, .pointer-over) .nav-text-original > span {
-    transform: translateY(-120%);
-  }
-  a:is(:hover, :focus-visible, .pointer-over) .nav-text-repeat > span {
-    transform: translateY(0);
-  }
   .explore-arrow {
     animation: explore-bounce 2s ease-in-out infinite;
   }
@@ -784,76 +755,6 @@ nav {
   }
 }
 
-/* Reveal the hero gradient in the incoming navigation letters. */
-.nav-link:is(:hover, :focus-visible, .pointer-over) {
-  color: var(--fg);
-}
-.nav-link .nav-text-repeat {
-  color: transparent;
-  background: linear-gradient(
-    105deg,
-    #f6f2c4 0%,
-    var(--lime) 36%,
-    #69ca6c 65%,
-    var(--teal) 100%
-  );
-  background-clip: text;
-  -webkit-background-clip: text;
-}
-.nav-link .nav-text-repeat > span {
-  background: linear-gradient(
-    105deg,
-    #f6f2c4 0%,
-    var(--lime) 36%,
-    #69ca6c 65%,
-    var(--teal) 100%
-  );
-  background-size: var(--nav-gradient-width, 100px) 100%;
-  background-position: var(--nav-gradient-offset, 0px) 0;
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-}
-.nav-link .nav-text-repeat {
-  background: none;
-}
-@media (prefers-reduced-motion: reduce) {
-  .nav-link:is(:hover, :focus-visible, .pointer-over) .nav-text-original {
-    visibility: hidden;
-  }
-  .nav-link:is(:hover, :focus-visible, .pointer-over) .nav-text-repeat > span {
-    transform: translateY(0);
-  }
-}
-
-.nav-link .nav-text-repeat > span {
-  position: relative;
-}
-.nav-link .nav-text-repeat > span::after {
-  content: attr(data-letter);
-  position: absolute;
-  inset: 0;
-  color: var(--lime);
-  -webkit-text-fill-color: var(--lime);
-  opacity: 0;
-  pointer-events: none;
-}
-.nav-link:is(:hover, :focus-visible, .pointer-over)
-  .nav-text-repeat
-  > span::after {
-  opacity: 1;
-}
-@media (prefers-reduced-motion: no-preference) {
-  .nav-link .nav-text-repeat > span::after {
-    transition: opacity 0.2s ease;
-  }
-  .nav-link:is(:hover, :focus-visible, .pointer-over)
-    .nav-text-repeat
-    > span::after {
-    transition: opacity 0.65s ease calc(0.5s + var(--letter-delay));
-  }
-}
-
 .intro h1 {
   animation: none;
 }
@@ -962,7 +863,8 @@ nav {
   width: fit-content;
   cursor: default;
 }
-.footer-ripple-letter {
+// Letter ripple (src/scripts/components/letter-ripple.js).
+.ripple-letter {
   display: inline-block;
   transform-origin: center 65%;
   will-change: transform;

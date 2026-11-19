@@ -1,4 +1,4 @@
-// Sliding underline for navigation links (concept, see concepts.html).
+// Sliding underline for navigation links (concept, shown on concepts.html).
 //
 // One lime underline is shared by all links in the nav. Hovering or focusing
 // a link slides it there, resizing to fit. If a link is marked as the current
@@ -67,6 +67,8 @@ function setupNavUnderline(nav) {
   place(current, { animate: false });
 }
 
-for (const nav of document.querySelectorAll('.nav-underline')) {
-  setupNavUnderline(nav);
+export function initNavUnderline() {
+  for (const nav of document.querySelectorAll('.nav-underline')) {
+    setupNavUnderline(nav);
+  }
 }
