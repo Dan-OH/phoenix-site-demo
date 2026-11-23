@@ -1,22 +1,17 @@
 // Letter ripple: letters near the pointer lift, tilt and stretch like a wave
-// passing through, then spring back. Used on the main nav links, the footer's
-// "Let's talk." and the 404 headline.
+// passing through, then spring back. Used on the footer's "Let's talk." and
+// the 404 headline.
 //
 // The element's text is split into letter spans (hidden from screen readers),
 // and the element gets an aria-label with the original text.
 
 import { reducedMotion } from '../lib/media-queries.js';
 
-// Sizes in px, worked out from the element's font size.
-const PRESETS = {
-  // Small nav text gets a fixed, subtle ripple.
-  nav: { reach: () => 25, lift: () => 3.5, stretch: () => 110 },
-  // Large headlines scale the ripple with their type.
-  headline: {
-    reach: (fontSize) => fontSize * 1.1,
-    lift: (fontSize) => fontSize * 0.13,
-    stretch: (fontSize) => fontSize * 1.6,
-  },
+// Sizes in px, scaled with the headline's font size.
+const SIZES = {
+  reach: (fontSize) => fontSize * 1.1,
+  lift: (fontSize) => fontSize * 0.13,
+  stretch: (fontSize) => fontSize * 1.6,
 };
 
 const SPRING = 0.12; // pull toward the target position
@@ -112,10 +107,7 @@ function setupLetterRipple(element, { reach, lift, stretch }) {
 }
 
 export function initLetterRipple() {
-  for (const link of document.querySelectorAll('.site-header .nav-link')) {
-    setupLetterRipple(link, PRESETS.nav);
-  }
   for (const headline of document.querySelectorAll('.footer-cta h2, [data-error-ripple]')) {
-    setupLetterRipple(headline, PRESETS.headline);
+    setupLetterRipple(headline, SIZES);
   }
 }

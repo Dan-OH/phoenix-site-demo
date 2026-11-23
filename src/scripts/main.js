@@ -22,6 +22,7 @@ import { initWorkPreviews } from './components/work-previews.js';
 // Header and site-wide
 initPointerHover();
 initMobileMenu();
+initNavUnderline();
 initLetterRipple();
 initLogoMorph();
 initReveal();
@@ -39,6 +40,3 @@ initWorkFilters();
 initProjectOverview();
 initEnquiryForm();
 initOfficeMap();
-
-// Concepts page
-initNavUnderline();

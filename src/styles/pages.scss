@@ -874,14 +874,6 @@ body {
   margin-bottom: 6px;
   padding-bottom: 16px;
 }
-// Nav link letters stay on one line.
-.nav-link .ripple-text {
-  display: inline-block;
-  white-space: nowrap;
-}
-.nav-link:is(:hover, :focus-visible, .pointer-over) {
-  color: var(--lime);
-}
 .map-marker {
   position: absolute;
   width: 144px;

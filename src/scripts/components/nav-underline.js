@@ -1,16 +1,15 @@
-// Sliding underline for navigation links (concept, shown on concepts.html).
+// Sliding underline for the main navigation.
 //
 // One lime underline is shared by all links in the nav. Hovering or focusing
 // a link slides it there, resizing to fit. If a link is marked as the current
 // page (aria-current="page"), the underline rests there and slides back when
 // the pointer leaves; otherwise it fades out where it is.
 //
-// Markup: <nav class="nav-underline">
-//           <a href="…">…</a> …
-//         </nav>
+// Applies to the .nav-link items in .site-header nav. The bar is hidden in the
+// mobile menu (see site.scss).
 
 function setupNavUnderline(nav) {
-  const links = [...nav.querySelectorAll('a')];
+  const links = [...nav.querySelectorAll('.nav-link')];
   const bar = document.createElement('span');
   bar.className = 'nav-underline-bar';
   bar.setAttribute('aria-hidden', 'true');
@@ -68,7 +67,6 @@ function setupNavUnderline(nav) {
 }
 
 export function initNavUnderline() {
-  for (const nav of document.querySelectorAll('.nav-underline')) {
-    setupNavUnderline(nav);
-  }
+  const nav = document.querySelector('.site-header nav');
+  if (nav) setupNavUnderline(nav);
 }
