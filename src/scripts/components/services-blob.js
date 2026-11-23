@@ -15,7 +15,7 @@ import { reducedMotion } from '../lib/media-queries.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 const RADIUS = 18; // the 30px number plus 3px each side
-const BAND = 0.5; // half the band's width, as a share of the radius
+const BAND = 0.6; // half the band's width, as a share of the radius
 const FILLET = 1.2; // radius of the rounded corners where band meets circle, likewise
 
 // Timings in ms.
@@ -244,7 +244,11 @@ function setupServicesBlob(list) {
       } else {
         // Stretch from wherever the pill is now.
         headMove = tween({ ...head }, HEAD_DURATION);
-        tailMove = tween({ ...tail }, TAIL_DURATION, TAIL_DELAY + TAIL_SHRINK * TAIL_LEAVE);
+        tailMove = tween(
+          { ...tail },
+          TAIL_DURATION,
+          TAIL_DELAY + TAIL_SHRINK * TAIL_LEAVE,
+        );
       }
       svg.classList.add('visible');
     }
