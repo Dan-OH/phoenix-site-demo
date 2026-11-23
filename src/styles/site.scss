@@ -378,7 +378,7 @@ nav {
 .services a {
   display: grid;
   grid-template-columns: clamp(36px, 6vw, 86px) 1fr;
-  align-items: start;
+  align-items: center;
   gap: 24px;
   padding-block: 24px;
   font-size: clamp(23px, 2.5vw, 32px);
