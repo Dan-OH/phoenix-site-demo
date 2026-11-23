@@ -1,3 +1,8 @@
+// Shared styles: base elements, layout and the components used across pages.
+// Page-specific styles live in pages.scss.
+
+@use 'media' as *;
+
 @font-face {
   font-family: Inter;
   src: url(/assets/inter.woff2) format('woff2');
@@ -20,13 +25,26 @@
   color: var(--fg);
   background: var(--bg);
   scroll-behavior: smooth;
+
+  @media #{$reduced-motion} {
+    scroll-behavior: auto;
+  }
+  @media #{$mobile} {
+    --gutter: 24px;
+  }
+  @media #{$wide} {
+    --gutter: clamp(80px, 5.2vw, 100px);
+  }
 }
+
+// ── Base elements ─────────────────────────────────────────────────────────
 
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
+
 body,
 p,
 h1,
@@ -36,29 +54,59 @@ ul,
 ol {
   margin: 0;
 }
+
+body {
+  letter-spacing: 0;
+
+  &.menu-open {
+    @media #{$mobile} {
+      overflow: hidden;
+    }
+  }
+}
+
 a {
   color: inherit;
   text-decoration: none;
+
+  &:focus-visible {
+    outline: 2px solid var(--lime);
+    outline-offset: 5px;
+  }
 }
-a:focus-visible {
-  outline: 2px solid var(--lime);
-  outline-offset: 5px;
-}
+
 img {
   display: block;
   max-width: 100%;
 }
+
+// ── Layout ────────────────────────────────────────────────────────────────
+
 .wrap {
   max-width: 1440px;
   margin-inline: auto;
   padding-inline: var(--gutter);
+
+  @media #{$wide} {
+    max-width: 1760px;
+  }
 }
+
 .block {
   padding-block: clamp(56px, 5.56vw, 80px);
+
+  @media #{$mobile} {
+    padding-block: 48px;
+  }
+  @media #{$wide} {
+    padding-block: 100px;
+  }
 }
+
 .dark {
   background: #000;
 }
+
 .skip {
   position: absolute;
   z-index: 10;
@@ -67,10 +115,20 @@ img {
   padding: 8px 14px;
   background: #000;
   transform: translateY(-200%);
+
+  &:focus {
+    transform: none;
+  }
 }
-.skip:focus {
-  transform: none;
+
+.eyebrow {
+  color: var(--lime);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
 }
+
+// ── Header ────────────────────────────────────────────────────────────────
 
 .site-header {
   min-height: 124px;
@@ -78,11 +136,46 @@ img {
   align-items: center;
   justify-content: space-between;
   gap: 24px;
+
+  @media #{$mobile} {
+    min-height: 88px;
+    gap: 12px;
+  }
+  @media #{$wide} {
+    min-height: 144px;
+  }
 }
+
+// Flame logo; the motion layer is shown while src/scripts/components/logo-morph.js runs.
 .logo {
   position: relative;
   flex: 0 0 128px;
+
+  img {
+    object-fit: contain;
+  }
+
+  &.morphing {
+    .logo-original {
+      visibility: hidden;
+    }
+    .logo-motion {
+      visibility: visible;
+    }
+  }
+
+  @media #{$mobile} {
+    flex-basis: 80px;
+  }
 }
+
+.logo-original {
+  @media #{$mobile} {
+    width: 80px;
+    height: 60px;
+  }
+}
+
 .logo-motion {
   position: absolute;
   inset: 50% 0 auto;
@@ -90,24 +183,20 @@ img {
   aspect-ratio: 1620 / 962;
   visibility: hidden;
   pointer-events: none;
+
+  canvas,
+  img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
 }
-.logo-motion canvas,
-.logo-motion img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-.logo.morphing .logo-original {
-  visibility: hidden;
-}
-.logo.morphing .logo-motion {
-  visibility: visible;
-}
-.logo img {
-  object-fit: contain;
-}
-nav {
+
+// Main navigation. Below 700px it becomes a full-screen menu, opened by
+// .menu-toggle (src/scripts/components/mobile-menu.js).
+.site-header nav {
+  position: relative;
   display: flex;
   justify-content: flex-end;
   flex-wrap: wrap;
@@ -115,765 +204,93 @@ nav {
   font-size: 18px;
   font-weight: 600;
   line-height: 28px;
-}
-.service-label {
-  background: linear-gradient(var(--lime), var(--lime)) left bottom / 0 2px
-    no-repeat;
-}
-.services a:is(:hover, :focus-visible, .pointer-over) .service-label {
-  background-size: 100% 2px;
-}
-.services a:is(:hover, :focus-visible, .pointer-over) {
-  color: var(--lime);
-}
-:is(.under, .footer-links a) {
-  position: relative;
-  isolation: isolate;
-  padding: 5px 0;
-  justify-content: flex-start;
-  text-align: left;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4em;
-  border-radius: 4px;
-}
-:is(.under, .footer-links a):is(:hover, :focus-visible, .pointer-over) {
-  color: var(--lime);
-}
-// Lime underline that grows from the left under the link text.
-.link-label {
-  background: linear-gradient(var(--lime), var(--lime)) no-repeat 0 100% / 0 2px;
-  padding-bottom: 2px;
-}
-:is(.under, .footer-links a):is(:hover, :focus-visible, .pointer-over)
-  .link-label {
-  background-size: 100% 2px;
-}
-.explore-arrow {
-  display: inline-block;
-}
-.intro {
-  padding-block: clamp(40px, 4.45vw, 64px);
-}
-.intro h1 {
-  display: grid;
-  width: fit-content;
-  max-width: 100%;
-  font-size: clamp(52px, 7.78vw, 112px);
-  font-weight: 700;
-  line-height: 1.12;
-  letter-spacing: -0.03em;
-  color: #fff;
-}
-.headline-text {
-  grid-area: 1 / 1;
-  padding-block: 0.025em 0.1em;
-}
-// Watercolour ink canvas, added over the text by src/scripts/headline-ink.js.
-.has-ink {
-  position: relative;
-}
-.headline-ink-canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-}
-.intro-copy {
-  display: grid;
-  grid-template-columns: 2fr 0.972fr;
-  align-items: start;
-  gap: 24px;
-  margin-top: 32px;
-  font-weight: 600;
-}
-.intro-copy p {
-  font-size: 24px;
-  line-height: 32px;
-}
-.under {
-  width: fit-content;
-  font-size: 18px;
-  line-height: 28px;
-  font-weight: 600;
-}
-.hero,
-.media {
-  overflow: clip;
-  position: relative;
-  isolation: isolate;
-  background: #343a40;
-}
-.hero {
-  aspect-ratio: 1440 / 812;
-}
-.work-preview {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.poster {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.sheet {
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  top: 0;
-  left: 0;
-  background-image: var(--sheet);
-  background-size: 600% 500%;
-  background-position: 80% 25%;
-}
-.hero-sheet {
-  width: 100%;
-  height: 100%;
-  background-position: 0 0;
-}
 
-.selected {
-  display: grid;
-  gap: 32px;
-}
-.eyebrow {
-  color: var(--lime);
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 500;
-}
-.selected > h2 {
-  font-size: clamp(36px, 4vw, 56px);
-  line-height: 1.14;
-}
-.work-row {
-  display: grid;
-  gap: 24px;
-  grid-template-columns: 1fr 1fr;
-  align-items: start;
-}
-.work-row.first {
-  gap: 32px;
-  grid-template-columns: 746fr 526fr;
-}
-.work-card {
-  min-width: 0;
-  display: grid;
-  gap: 16px;
-}
-.media {
-  aspect-ratio: 3 / 2;
-}
-.caption h3 {
-  font-size: 24px;
-  font-weight: 600;
-  line-height: 32px;
-}
-.caption p {
-  font-size: 18px;
-  line-height: 28px;
-  margin-top: 4px;
-}
-.tags {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 16px;
-}
-.tags li {
-  border-radius: 4px;
-  padding: 4px 8px;
-  background: #343a40;
-  font-size: 12px;
-  line-height: 16px;
-}
-.work-card:is(:hover, :focus-visible, .pointer-over) h3 {
-  color: var(--lime);
-}
-.caption-arrow {
-  display: inline-block;
-  margin-inline-start: 0.45em;
-  font-size: 0.8em;
-  opacity: 0;
-}
-.work-card:is(:hover, :focus-visible, .pointer-over) .caption-arrow {
-  opacity: 1;
-}
-@media (any-hover: hover) and (any-pointer: fine) {
-  .work-card,
-  .work-card * {
-    cursor: pointer;
-  }
-}
-.button {
-  justify-self: start;
-  display: inline-flex;
-  width: fit-content;
-  border-radius: 4px;
-  padding: 10px 20px;
-  background: var(--fg);
-  color: var(--bg);
-  font-weight: 600;
-  line-height: 20px;
-}
-.button {
-  position: relative;
-  isolation: isolate;
-  align-items: center;
-  gap: 0.4em;
-}
-.button {
-  overflow: hidden;
-}
-.button > :not(.button-fill) {
-  position: relative;
-  z-index: 1;
-}
-// Ink fill, painted by src/scripts/button-ink.js.
-.button-fill {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  border-radius: inherit;
-  pointer-events: none;
-}
-.button-arrow {
-  display: inline-block;
-}
-
-.split {
-  display: grid;
-  grid-template-columns: 416fr 856fr;
-  gap: 24px;
-}
-.body-copy {
-  display: grid;
-  gap: 24px;
-}
-.body-copy h2 {
-  font-size: clamp(30px, 3.2vw, 40px);
-  line-height: 1.3;
-  letter-spacing: -0.03em;
-}
-.body-copy > p {
-  font-size: 20px;
-  line-height: 32px;
-}
-.services {
-  list-style: none;
-  padding: 0;
-  border-bottom: 1px solid var(--rule);
-}
-.services li {
-  border-top: 1px solid var(--rule);
-}
-.services a {
-  display: grid;
-  grid-template-columns: clamp(36px, 6vw, 86px) 1fr;
-  align-items: center;
-  gap: 24px;
-  padding-block: 24px;
-  font-size: clamp(23px, 2.5vw, 32px);
-  font-weight: 700;
-  line-height: 1.25;
-}
-.service-label {
-  width: fit-content;
-  max-width: 100%;
-}
-.services a > span:first-child {
-  color: var(--lime);
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 500;
-}
-
-.clients {
-  text-align: center;
-  background: #202529;
-  padding-block: 32px;
-  overflow: hidden;
-}
-.clients h2 {
-  font-size: clamp(30px, 3.2vw, 40px);
-  line-height: 1.3;
-  letter-spacing: -0.03em;
-}
-.client-track {
-  display: flex;
-  max-width: 1440px;
-  margin-inline: auto;
-  overflow: clip;
-  cursor: grab;
-  touch-action: pan-y pinch-zoom;
-  user-select: none;
-}
-.client-track.dragging {
-  cursor: grabbing;
-}
-.client-track:focus-visible {
-  outline: 2px solid var(--lime);
-  outline-offset: -2px;
-}
-.client-track ul {
-  flex: 0 0 100%;
-  display: flex;
-  padding: 0;
-  list-style: none;
-}
-.client-track li {
-  width: 20%;
-  display: grid;
-  place-items: center;
-  height: 132px;
-  padding: 12px;
-}
-.client-track img {
-  width: 168px;
-  height: 58px;
-  object-fit: contain;
-  pointer-events: none;
-}
-
-.footer {
-  display: grid;
-  gap: 48px;
-  padding-block: 64px;
-}
-.footer-cta {
-  display: grid;
-  grid-template-columns: minmax(0, 800fr) minmax(0, 472fr);
-  gap: 24px;
-  align-items: center;
-}
-.footer-cta h2 {
-  font-size: clamp(58px, 6.1vw, 88px);
-  line-height: 1.09;
-  letter-spacing: -0.03em;
-}
-.footer-links {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 24px;
-  border-block: 1px solid var(--rule);
-  padding-block: 48px;
-}
-.footer-links > div {
-  display: grid;
-  gap: 12px;
-  align-content: start;
-  overflow-wrap: anywhere;
-}
-.footer-links h3 {
-  font-size: 14px;
-  font-weight: 600;
-}
-.footer-links address {
-  font-style: normal;
-  line-height: 2;
-}
-.footer-links a {
-  width: fit-content;
-  max-width: 100%;
-  font-size: 18px;
-  font-weight: 600;
-}
-.footer-legal {
-  color: #ced4da;
-  font-size: 14px;
-  display: flex;
-  gap: 32px;
-  flex-wrap: wrap;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .button {
-    transition: transform 0.18s ease;
-  }
-  :is(.under, .footer-links a) {
-    transition: color 0.3s ease;
-  }
-  .link-label {
-    transition: background-size 0.35s cubic-bezier(0.22, 0.75, 0.25, 1);
-  }
-  .button-arrow,
-  .caption-arrow {
-    transition: transform 0.32s cubic-bezier(0.22, 0.75, 0.25, 1);
-  }
-  :is(.button, .under, .footer-links a):is(
-      :hover,
-      :focus-visible,
-      .pointer-over
-    )
-    .button-arrow {
-    transform: translate(3px, -3px);
-  }
-  // A leading arrow (e.g. "← All work") points back, so it nudges left instead.
-  :is(.button, .under, .footer-links a):is(
-      :hover,
-      :focus-visible,
-      .pointer-over
-    )
-    .button-arrow:first-child {
-    transform: translateX(-3px);
-  }
-  .button:active {
-    transform: scale(0.97);
-  }
-  .caption-arrow {
-    transform: translate(-4px, 4px);
+  @media #{$mobile} {
+    --fg: #212529;
+    --lime: #212529;
+    --teal: #212529;
+    position: fixed;
+    inset: 0;
+    z-index: 25;
+    background: #f8f9fa;
+    color: #212529;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 32px;
+    padding: 88px 24px 48px;
+    font-size: 40px;
+    line-height: 48px;
+    overflow-y: auto;
+    visibility: hidden;
+    pointer-events: none;
+    clip-path: circle(
+      0 at var(--menu-x, calc(100% - 48px)) var(--menu-y, 44px)
+    );
     transition:
-      transform 0.32s cubic-bezier(0.22, 0.75, 0.25, 1),
-      opacity 0.22s ease;
-  }
-  .work-card:is(:hover, :focus-visible, .pointer-over) .caption-arrow {
-    transform: none;
-  }
-  .service-label {
-    transition: background-size 0.32s cubic-bezier(0.22, 0.75, 0.25, 1);
-  }
-  .services a {
-    transition: color 0.28s ease;
-  }
-  .explore-arrow {
-    animation: explore-bounce 2s ease-in-out infinite;
-  }
+      clip-path 0.6s cubic-bezier(0.77, 0, 0.175, 1),
+      visibility 0s 0.6s;
 
-  .intro h1,
-  .intro-copy {
-    animation: arrive 0.95s cubic-bezier(0.2, 0.72, 0.25, 1) both;
-  }
-  .intro-copy {
-    animation-delay: 0.18s;
-  }
+    > * {
+      opacity: 0;
+      transform: translateY(28px);
+      transition:
+        opacity 0.18s ease,
+        transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
 
-  [data-reveal] {
-    --reveal-delay: 0ms;
-    transition:
-      opacity 0.75s ease var(--reveal-delay),
-      translate 1s cubic-bezier(0.2, 0.72, 0.25, 1) var(--reveal-delay);
-  }
-  [data-reveal].pending {
-    opacity: 0;
-    translate: 0 clamp(32px, 5vw, 70px);
-  }
-  [data-reveal].pending:is(:hover, :focus-within) {
-    opacity: 1;
-    translate: none;
-  }
-  .selected > h2 {
-    --reveal-delay: 110ms;
-  }
-  .caption {
-    --reveal-delay: 140ms;
-  }
-  .media[data-reveal] {
-    scale: 1;
-    transform-origin: center bottom;
-    transition:
-      scale 0.95s cubic-bezier(0.22, 0.7, 0.25, 1) var(--reveal-delay),
-      translate 0.95s cubic-bezier(0.22, 0.7, 0.25, 1) var(--reveal-delay),
-      opacity 0.55s ease var(--reveal-delay);
-  }
-  .media[data-reveal].pending {
-    opacity: 0.5;
-    scale: 0.78 0.7;
-    translate: 0 clamp(24px, 3vw, 48px);
-  }
-  .work-card:focus-visible [data-reveal].pending {
-    opacity: 1;
-    translate: none;
-    scale: 1;
-    transition: none;
-  }
-  @media (min-width: 701px) {
-    .work-card:nth-child(2) .media {
-      --reveal-delay: 100ms;
+    a:focus-visible {
+      outline-color: #212529;
     }
-    .work-card:nth-child(2) .caption {
-      --reveal-delay: 210ms;
+
+    &.open {
+      visibility: visible;
+      pointer-events: auto;
+      clip-path: circle(
+        150vmax at var(--menu-x, calc(100% - 48px)) var(--menu-y, 44px)
+      );
+      transition-delay: 0s;
+
+      // Links rise in one after another.
+      > * {
+        opacity: 1;
+        transform: translateY(0);
+        transition-duration: 0.45s, 0.55s;
+        transition-delay: 0.2s;
+      }
+      > :nth-child(2) {
+        transition-delay: 0.26s;
+      }
+      > :nth-child(3) {
+        transition-delay: 0.32s;
+      }
+      > :nth-child(4) {
+        transition-delay: 0.38s;
+      }
+      > :nth-child(5) {
+        transition-delay: 0.44s;
+      }
     }
-  }
-  @supports (animation-timeline: view()) {
-    .hero {
-      view-timeline: --hero-scroll block;
+
+    @media #{$reduced-motion} {
+      &,
+      > * {
+        transition: none;
+      }
     }
-    .media {
-      view-timeline: --work-scroll block;
-    }
-    .hero > *,
-    .media > * {
-      animation: image-drift linear both;
-      animation-range: entry 0% exit 100%;
-    }
-    .hero > * {
-      animation-timeline: --hero-scroll;
-      animation-range: entry 0% exit 100%;
-    }
-    .media > * {
-      animation-timeline: --work-scroll;
-      animation-range: entry 0% exit 100%;
-    }
-  }
-  @media (any-hover: hover) and (any-pointer: fine) {
-    .media > .bero {
-      transition: transform 0.8s cubic-bezier(0.2, 0.65, 0.3, 1);
-    }
-    .work-card:hover .bero {
-      transform: scale(1.055);
-    }
-  }
-}
-@keyframes explore-bounce {
-  0%,
-  100% {
-    transform: translateY(0) scale(1);
-  }
-  50% {
-    transform: translateY(4px) scale(1.15);
-  }
-}
-@keyframes arrive {
-  from {
-    opacity: 0;
-    transform: translateY(40px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-@keyframes image-drift {
-  from {
-    translate: 0 6%;
-    scale: 1.16;
-  }
-  to {
-    translate: 0 -6%;
-    scale: 1.16;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  :root {
-    scroll-behavior: auto;
   }
 }
 
-@media (max-width: 700px) {
-  .site-header {
-    min-height: 94px;
-    gap: 12px;
-  }
-  .logo {
-    flex-basis: 90px;
-  }
-  .logo-original {
-    height: 68px;
-  }
-  nav {
-    gap: 4px 15px;
-    font-size: 14px;
-    line-height: 22px;
-  }
-  .intro h1 {
-    font-size: clamp(44px, 10.5vw, 70px);
-  }
-  .intro-copy,
-  .split,
-  .work-row,
-  .work-row.first,
-  .footer-links {
-    grid-template-columns: 1fr;
-  }
-  .intro-copy {
-    gap: 12px;
-    margin-top: 22px;
-  }
-  .intro-copy p,
-  .body-copy > p {
-    font-size: 18px;
-    line-height: 28px;
-  }
-  .selected,
-  .work-row,
-  .work-row.first {
-    gap: 28px;
-  }
-  .footer-cta {
-    grid-template-columns: 1fr;
-  }
-  .client-track li {
-    height: 90px;
-    padding: 6px;
-  }
-  .client-track img {
-    height: 42px;
-  }
-  .footer {
-    gap: 30px;
-    padding-block: 48px;
-  }
-  .footer-links {
-    padding-block: 30px;
-  }
-}
-
-@media (min-width: 1600px) {
-  :root {
-    --gutter: clamp(80px, 5.2vw, 100px);
-  }
-  .wrap,
-  .client-track {
-    max-width: 1760px;
-  }
-  .site-header {
-    min-height: 144px;
-  }
-  .intro h1 {
-    font-size: clamp(120px, 7.7vw, 142px);
-  }
-  .block {
-    padding-block: 100px;
-  }
-  .selected {
-    gap: 40px;
-  }
-  .work-row,
-  .work-row.first {
-    gap: 40px;
-  }
-}
-
-.intro h1 {
-  animation: none;
-}
-.headline-text {
-  display: block;
-}
-.hero-connected {
-  display: inline-block;
-}
-.hero-thinking {
-  display: inline-block;
-  vertical-align: bottom;
-  overflow: clip;
-  padding: 0.04em 0.06em 0.12em 0.015em;
-  margin: -0.04em -0.06em -0.12em -0.015em;
-}
-.hero-thinking > span {
-  display: inline-block;
-}
-@media (prefers-reduced-motion: no-preference) {
-  .hero-connected {
-    animation: connected-arrives 0.55s cubic-bezier(0.2, 0.7, 0.3, 1) both;
-  }
-  .hero-thinking {
-    animation: thinking-opens 0.95s cubic-bezier(0.22, 0.75, 0.25, 1) 0.5s both;
-  }
-  .hero-thinking > span {
-    animation: thinking-emerges 0.95s cubic-bezier(0.22, 0.75, 0.25, 1) 0.5s
-      both;
-  }
-  .intro-copy {
-    animation-delay: 1.12s;
-  }
-}
-@keyframes connected-arrives {
-  from {
-    opacity: 0;
-    translate: 0 12px;
-  }
-  to {
-    opacity: 1;
-    translate: 0 0;
-  }
-}
-@keyframes thinking-opens {
-  from {
-    clip-path: inset(-20% 100% -20% 0);
-  }
-  to {
-    clip-path: inset(-20% -2% -20% 0);
-  }
-}
-@keyframes thinking-emerges {
-  from {
-    transform: translateX(-0.85em);
-    opacity: 0;
-  }
-  24% {
-    opacity: 1;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-.services a > span:first-child {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: 30px;
-  height: 30px;
-  margin-top: -3px;
-}
-.services li.blob-covered a > span:first-child {
-  color: var(--bg);
-}
-// Number highlight (src/scripts/components/services-blob.js): above the row
-// dividers, under the text.
-.services {
-  position: relative;
-}
-.services li {
-  position: relative;
-}
-.services a {
-  position: relative;
-  z-index: 1;
-}
-.services-blob {
-  position: absolute;
-  z-index: 0;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  fill: #c3d529;
-  pointer-events: none;
-  visibility: hidden;
-
-  &.visible {
-    visibility: visible;
-  }
-}
-.service-label {
-  background: none;
-}
-.footer-cta h2 {
-  width: fit-content;
-  cursor: default;
-}
-// Sliding nav underline (src/scripts/components/nav-underline.js).
-.site-header nav {
-  position: relative;
-}
 .nav-link {
   padding-block: 4px;
+
+  // The current page link is lime, matching its underline.
+  &[aria-current='page'] {
+    color: var(--lime);
+  }
 }
-// The current page link is lime, matching its underline.
-.nav-link[aria-current='page'] {
-  color: var(--lime);
-}
+
+// Sliding underline (src/scripts/components/nav-underline.js).
 .nav-underline-bar {
   position: absolute;
   top: 0;
@@ -889,9 +306,8 @@ nav {
   &.visible {
     opacity: 1;
   }
-}
-@media (prefers-reduced-motion: no-preference) {
-  .nav-underline-bar {
+
+  @media #{$motion} {
     transition:
       transform 0.4s cubic-bezier(0.22, 0.75, 0.25, 1),
       width 0.4s cubic-bezier(0.22, 0.75, 0.25, 1),
@@ -901,52 +317,993 @@ nav {
       transition: opacity 0.25s ease;
     }
   }
-}
-// No underline in the full-screen mobile menu.
-@media (max-width: 700px) {
-  .nav-underline-bar {
+
+  // No underline in the full-screen mobile menu.
+  @media #{$mobile} {
     display: none;
   }
 }
-// Letter ripple (src/scripts/components/letter-ripple.js).
+
+.menu-toggle {
+  display: none;
+
+  @media #{$mobile} {
+    position: relative;
+    z-index: 30;
+    display: grid;
+    gap: 5px;
+    align-content: center;
+    justify-items: center;
+    width: 48px;
+    height: 48px;
+    background: none;
+    color: var(--fg);
+    border: 1px solid var(--rule);
+    transition:
+      color 0.3s ease,
+      border-color 0.3s ease;
+
+    span {
+      display: block;
+      width: 20px;
+      height: 1px;
+      background: currentColor;
+      transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+    }
+
+    // The two bars cross into an X.
+    &[aria-expanded='true'] {
+      span:first-child {
+        transform: translateY(3px) rotate(45deg);
+      }
+      span:last-child {
+        transform: translateY(-3px) rotate(-45deg);
+      }
+    }
+
+    .menu-visible & {
+      color: #212529;
+      border-color: #adb5bd;
+    }
+
+    @media #{$reduced-motion} {
+      &,
+      span {
+        transition: none;
+      }
+    }
+  }
+}
+
+.mobile-menu-contact {
+  display: none;
+
+  @media #{$mobile} {
+    display: block;
+    margin-top: 24px;
+
+    a {
+      font-size: 16px;
+    }
+  }
+}
+
+// ── Links and buttons ─────────────────────────────────────────────────────
+
+:is(.under, .footer-links a) {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.4em;
+  padding: 5px 0;
+  border-radius: 4px;
+  text-align: left;
+
+  &:is(:hover, :focus-visible, .pointer-over) {
+    color: var(--lime);
+
+    .link-label {
+      background-size: 100% 2px;
+    }
+  }
+
+  @media #{$motion} {
+    transition: color 0.3s ease;
+  }
+}
+
+.under {
+  width: fit-content;
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: 600;
+}
+
+// Lime underline that grows from the left under the link text.
+.link-label {
+  background: linear-gradient(var(--lime), var(--lime)) no-repeat 0 100% / 0 2px;
+  padding-bottom: 2px;
+
+  @media #{$motion} {
+    transition: background-size 0.35s cubic-bezier(0.22, 0.75, 0.25, 1);
+  }
+}
+
+.button {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  width: fit-content;
+  border-radius: 4px;
+  padding: 10px 20px;
+  background: var(--fg);
+  color: var(--bg);
+  font-weight: 600;
+  line-height: 20px;
+
+  > :not(.button-fill) {
+    position: relative;
+    z-index: 1;
+  }
+
+  @media #{$motion} {
+    transition: transform 0.18s ease;
+
+    &:active {
+      transform: scale(0.97);
+    }
+  }
+}
+
+// Ink fill, painted by src/scripts/components/button-ink.js.
+.button-fill {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.button-arrow {
+  display: inline-block;
+
+  @media #{$motion} {
+    transition: transform 0.32s cubic-bezier(0.22, 0.75, 0.25, 1);
+
+    :is(.button, .under, .footer-links a):is(
+        :hover,
+        :focus-visible,
+        .pointer-over
+      )
+      & {
+      transform: translate(3px, -3px);
+
+      // A leading arrow (e.g. "← All work") points back, so it nudges left instead.
+      &:first-child {
+        transform: translateX(-3px);
+      }
+    }
+  }
+}
+
+.explore-arrow {
+  display: inline-block;
+
+  @media #{$motion} {
+    animation: explore-bounce 2s ease-in-out infinite;
+  }
+}
+
+// ── Home intro ────────────────────────────────────────────────────────────
+
+.intro {
+  padding-block: clamp(40px, 4.45vw, 64px);
+
+  h1 {
+    display: grid;
+    width: fit-content;
+    max-width: 100%;
+    font-size: clamp(52px, 7.78vw, 112px);
+    font-weight: 700;
+    line-height: 1.12;
+    letter-spacing: -0.03em;
+    color: #fff;
+
+    @media #{$mobile} {
+      font-size: 40px;
+      line-height: 44px;
+    }
+    @media #{$wide} {
+      font-size: clamp(120px, 7.7vw, 142px);
+    }
+  }
+
+  @media #{$mobile} {
+    padding-block: 48px;
+  }
+}
+
+.headline-text {
+  display: block;
+  grid-area: 1 / 1;
+  padding-block: 0.025em 0.1em;
+}
+
+// "Connected" rises in, then "thinking" is revealed from the left.
+.hero-connected {
+  display: inline-block;
+
+  @media #{$motion} {
+    animation: connected-arrives 0.55s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+  }
+}
+
+.hero-thinking {
+  display: inline-block;
+  vertical-align: bottom;
+  overflow: clip;
+  padding: 0.04em 0.06em 0.12em 0.015em;
+  margin: -0.04em -0.06em -0.12em -0.015em;
+
+  @media #{$motion} {
+    animation: thinking-opens 0.95s cubic-bezier(0.22, 0.75, 0.25, 1) 0.5s both;
+  }
+
+  > span {
+    display: inline-block;
+
+    @media #{$motion} {
+      animation: thinking-emerges 0.95s cubic-bezier(0.22, 0.75, 0.25, 1) 0.5s
+        both;
+    }
+  }
+}
+
+// Watercolour ink canvas, added over the text by src/scripts/components/headline-ink.js.
+.has-ink {
+  position: relative;
+}
+
+.headline-ink-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.intro-copy {
+  display: grid;
+  grid-template-columns: 2fr 0.972fr;
+  align-items: start;
+  gap: 24px;
+  margin-top: 32px;
+  font-weight: 600;
+
+  p {
+    font-size: 24px;
+    line-height: 32px;
+
+    @media #{$mobile} {
+      font-size: 20px;
+      line-height: 28px;
+    }
+  }
+
+  @media #{$motion} {
+    animation: arrive 0.95s cubic-bezier(0.2, 0.72, 0.25, 1) 1.12s both;
+  }
+  @media #{$mobile} {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin-top: 24px;
+  }
+}
+
+// ── Hero and media ────────────────────────────────────────────────────────
+
+.hero,
+.media {
+  overflow: clip;
+  position: relative;
+  isolation: isolate;
+  background: #343a40;
+}
+
+.hero {
+  aspect-ratio: 1440 / 812;
+
+  @media #{$mobile} {
+    height: 440px;
+    aspect-ratio: auto;
+  }
+}
+
+.media {
+  aspect-ratio: 3 / 2;
+}
+
+.work-preview,
+.poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+// Sprite sheet frames (src/scripts/components/hero-reel.js).
+.sheet {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: var(--sheet);
+  background-size: 600% 500%;
+  background-position: 80% 25%;
+}
+
+.hero-sheet {
+  width: 100%;
+  height: 100%;
+  background-position: 0 0;
+}
+
+// Crop each reel frame inside a centered viewport at every screen width.
+.hero-reel-window {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+
+  .hero-sheet {
+    left: 50%;
+    width: auto;
+    height: 100%;
+    aspect-ratio: 16 / 9;
+    transform: translateX(-50%);
+  }
+}
+
+// Images drift slowly as they scroll through the viewport.
+@media #{$motion} {
+  @supports (animation-timeline: view()) {
+    .hero {
+      view-timeline: --hero-scroll block;
+
+      > * {
+        animation: image-drift linear both;
+        animation-timeline: --hero-scroll;
+        animation-range: entry 0% exit 100%;
+      }
+    }
+
+    .media {
+      view-timeline: --work-scroll block;
+
+      > * {
+        animation: image-drift linear both;
+        animation-timeline: --work-scroll;
+        animation-range: entry 0% exit 100%;
+      }
+    }
+  }
+}
+
+// ── Selected work ─────────────────────────────────────────────────────────
+
+.selected {
+  display: grid;
+  gap: 32px;
+
+  > h2 {
+    font-size: clamp(36px, 4vw, 56px);
+    line-height: 1.14;
+
+    @media #{$mobile} {
+      font-size: 32px;
+      line-height: 40px;
+    }
+  }
+
+  @media #{$mobile} {
+    gap: 28px;
+  }
+  @media #{$wide} {
+    gap: 40px;
+  }
+}
+
+.work-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: start;
+  gap: 24px;
+
+  &.first {
+    grid-template-columns: 746fr 526fr;
+    gap: 32px;
+  }
+
+  @media #{$mobile} {
+    &,
+    &.first {
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+  }
+  @media #{$wide} {
+    &,
+    &.first {
+      gap: 40px;
+    }
+  }
+}
+
+.work-card {
+  min-width: 0;
+  display: grid;
+  gap: 16px;
+
+  .media > * {
+    pointer-events: none;
+  }
+
+  &:is(:hover, :focus-visible, .pointer-over) {
+    h3 {
+      color: var(--lime);
+    }
+
+    .caption-arrow {
+      opacity: 1;
+
+      @media #{$motion} {
+        transform: none;
+      }
+    }
+  }
+
+  @media #{$fine-hover} {
+    &,
+    * {
+      cursor: pointer;
+    }
+  }
+
+  // The Bero card zooms its still image instead of playing a GIF.
+  @media #{$motion} {
+    @media #{$fine-hover} {
+      .media > .bero {
+        transition: transform 0.8s cubic-bezier(0.2, 0.65, 0.3, 1);
+      }
+
+      &:hover .bero {
+        transform: scale(1.055);
+      }
+    }
+  }
+}
+
+.caption {
+  h3 {
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 32px;
+
+    @media #{$mobile} {
+      font-size: 20px;
+      line-height: 28px;
+    }
+  }
+
+  p {
+    margin-top: 4px;
+    font-size: 18px;
+    line-height: 28px;
+
+    @media #{$mobile} {
+      font-size: 16px;
+      line-height: 24px;
+    }
+  }
+}
+
+.caption-arrow {
+  display: inline-block;
+  margin-inline-start: 0.45em;
+  font-size: 0.8em;
+  opacity: 0;
+
+  @media #{$motion} {
+    transform: translate(-4px, 4px);
+    transition:
+      transform 0.32s cubic-bezier(0.22, 0.75, 0.25, 1),
+      opacity 0.22s ease;
+  }
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 0;
+  list-style: none;
+
+  li {
+    border-radius: 4px;
+    padding: 4px 8px;
+    background: #343a40;
+    font-size: 12px;
+    line-height: 16px;
+  }
+}
+
+// Cursor icon over work cards (src/scripts/components/work-cursor.js), kept
+// independent of the animated image layers.
+.work-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  width: 36px;
+  height: 36px;
+  background: url(/assets/cursor.png) center / contain no-repeat;
+  opacity: 0;
+  pointer-events: none;
+  contain: layout style paint;
+
+  @media #{$motion} {
+    transition: opacity 0.2s ease;
+  }
+  @media #{$fine-hover} {
+    &.active {
+      opacity: 1;
+    }
+  }
+}
+
+// ── Text sections ─────────────────────────────────────────────────────────
+
+.split {
+  display: grid;
+  grid-template-columns: 416fr 856fr;
+  gap: 24px;
+
+  @media #{$mobile} {
+    grid-template-columns: 1fr;
+  }
+}
+
+.body-copy {
+  display: grid;
+  gap: 24px;
+
+  h2 {
+    font-size: clamp(30px, 3.2vw, 40px);
+    line-height: 1.3;
+    letter-spacing: -0.03em;
+
+    @media #{$mobile} {
+      font-size: 28px;
+      line-height: 36px;
+    }
+  }
+
+  > p {
+    font-size: 20px;
+    line-height: 32px;
+
+    @media #{$mobile} {
+      font-size: 16px;
+      line-height: 24px;
+    }
+  }
+}
+
+// ── Services list ─────────────────────────────────────────────────────────
+
+.services {
+  position: relative;
+  padding: 0;
+  border-bottom: 1px solid var(--rule);
+  list-style: none;
+
+  li {
+    position: relative;
+    border-top: 1px solid var(--rule);
+  }
+
+  a {
+    position: relative;
+    z-index: 1; // above the number highlight
+    display: grid;
+    grid-template-columns: clamp(36px, 6vw, 86px) 1fr;
+    align-items: center;
+    gap: 24px;
+    padding-block: 24px;
+    font-size: clamp(23px, 2.5vw, 32px);
+    font-weight: 700;
+    line-height: 1.25;
+
+    &:is(:hover, :focus-visible, .pointer-over) {
+      color: var(--lime);
+    }
+
+    @media #{$motion} {
+      transition: color 0.28s ease;
+    }
+    @media #{$mobile} {
+      font-size: 24px;
+      line-height: 32px;
+    }
+
+    // The row number.
+    > span:first-child {
+      position: relative;
+      isolation: isolate;
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      margin-top: -3px;
+      color: var(--lime);
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 500;
+
+      @media #{$motion} {
+        transition: color 0.25s ease;
+      }
+    }
+  }
+
+  li.blob-covered a > span:first-child {
+    color: var(--bg);
+  }
+}
+
+.service-label {
+  width: fit-content;
+  max-width: 100%;
+}
+
+// Number highlight (src/scripts/components/services-blob.js): above the row
+// dividers, under the text.
+.services-blob {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  fill: #c3d529;
+  pointer-events: none;
+  visibility: hidden;
+
+  &.visible {
+    visibility: visible;
+  }
+}
+
+// ── Clients ───────────────────────────────────────────────────────────────
+
+.clients {
+  overflow: hidden;
+  padding-block: 32px;
+  background: #202529;
+  text-align: center;
+
+  h2 {
+    font-size: clamp(30px, 3.2vw, 40px);
+    line-height: 1.3;
+    letter-spacing: -0.03em;
+  }
+}
+
+// Draggable logo ticker (src/scripts/components/client-ticker.js).
+.client-track {
+  display: flex;
+  max-width: 1440px;
+  margin-inline: auto;
+  overflow: clip;
+  cursor: grab;
+  touch-action: pan-y pinch-zoom;
+  user-select: none;
+
+  &.dragging {
+    cursor: grabbing;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--lime);
+    outline-offset: -2px;
+  }
+
+  ul {
+    flex: 0 0 100%;
+    display: flex;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    display: grid;
+    place-items: center;
+    width: 20%;
+    height: 132px;
+    padding: 12px;
+
+    @media #{$mobile} {
+      height: 90px;
+      padding: 6px;
+    }
+  }
+
+  img {
+    width: 168px;
+    height: 58px;
+    object-fit: contain;
+    pointer-events: none;
+
+    @media #{$mobile} {
+      height: 42px;
+    }
+  }
+
+  @media #{$wide} {
+    max-width: 1760px;
+  }
+}
+
+// ── Footer ────────────────────────────────────────────────────────────────
+
+.footer {
+  display: grid;
+  gap: 48px;
+  padding-block: 64px;
+
+  @media #{$mobile} {
+    gap: 30px;
+    padding-block: 48px;
+  }
+}
+
+.footer-cta {
+  display: grid;
+  grid-template-columns: minmax(0, 800fr) minmax(0, 472fr);
+  align-items: center;
+  gap: 24px;
+
+  h2 {
+    width: fit-content;
+    font-size: clamp(58px, 6.1vw, 88px);
+    line-height: 1.09;
+    letter-spacing: -0.03em;
+    cursor: default;
+
+    @media #{$mobile} {
+      font-size: 40px;
+      line-height: 44px;
+    }
+  }
+
+  @media #{$mobile} {
+    grid-template-columns: 1fr;
+
+    > .button {
+      justify-content: center;
+      width: 100%;
+      min-height: 48px;
+    }
+  }
+}
+
+.footer-links {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  padding-block: 48px;
+  border-block: 1px solid var(--rule);
+
+  > div {
+    display: grid;
+    align-content: start;
+    gap: 12px;
+    overflow-wrap: anywhere;
+  }
+
+  h3 {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  > div:first-child > h3 {
+    font-size: 18px;
+    line-height: 28px;
+  }
+
+  > div:not(:first-child) > h3 {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+  }
+
+  address {
+    font-style: normal;
+    line-height: 2;
+  }
+
+  a {
+    width: fit-content;
+    max-width: 100%;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 28px;
+  }
+
+  @media #{$mobile} {
+    grid-template-columns: 1fr;
+    padding-block: 30px;
+  }
+}
+
+.footer-legal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  color: #ced4da;
+  font-size: 14px;
+
+  @media #{$mobile} {
+    gap: 8px;
+  }
+}
+
+// ── Reveal on scroll (src/scripts/components/reveal.js) ───────────────────
+
+@media #{$motion} {
+  [data-reveal] {
+    --reveal-delay: 0ms;
+    transition:
+      opacity 0.75s ease var(--reveal-delay),
+      translate 1s cubic-bezier(0.2, 0.72, 0.25, 1) var(--reveal-delay);
+
+    &.pending {
+      opacity: 0;
+      translate: 0 clamp(32px, 5vw, 70px);
+
+      &:is(:hover, :focus-within) {
+        opacity: 1;
+        translate: none;
+      }
+    }
+  }
+
+  // Staggered delays. These must follow [data-reveal], which they override.
+  .selected > h2 {
+    --reveal-delay: 110ms;
+  }
+  .caption {
+    --reveal-delay: 140ms;
+  }
+
+  // Work images grow up into place.
+  .media[data-reveal] {
+    scale: 1;
+    transform-origin: center bottom;
+    transition:
+      scale 0.95s cubic-bezier(0.22, 0.7, 0.25, 1) var(--reveal-delay),
+      translate 0.95s cubic-bezier(0.22, 0.7, 0.25, 1) var(--reveal-delay),
+      opacity 0.55s ease var(--reveal-delay);
+
+    &.pending {
+      opacity: 0.5;
+      scale: 0.78 0.7;
+      translate: 0 clamp(24px, 3vw, 48px);
+    }
+  }
+
+  .work-card {
+    &:focus-visible [data-reveal].pending {
+      opacity: 1;
+      translate: none;
+      scale: 1;
+      transition: none;
+    }
+
+    // The second card in a row follows the first.
+    @media #{$desktop} {
+      &:nth-child(2) {
+        .media {
+          --reveal-delay: 100ms;
+        }
+        .caption {
+          --reveal-delay: 210ms;
+        }
+      }
+    }
+  }
+}
+
+// ── Letter ripple (src/scripts/components/letter-ripple.js) ───────────────
+
 .ripple-letter {
   display: inline-block;
   transform-origin: center 65%;
   will-change: transform;
 }
-@media (prefers-reduced-motion: no-preference) {
-  .services a > span:first-child {
-    transition: color 0.25s ease;
+
+// ── Keyframes ─────────────────────────────────────────────────────────────
+
+@keyframes explore-bounce {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(4px) scale(1.15);
   }
 }
 
-.services a > span:first-child {
-  isolation: isolate;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .work-cursor {
-    transition: opacity 0.2s ease;
+@keyframes arrive {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
-/* Keep the work cursor independent of animated image layers. */
-.work-cursor {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 36px;
-  height: 36px;
-  z-index: 9999;
-  pointer-events: none;
-  opacity: 0;
-  background: url(/assets/cursor.png) center / contain no-repeat;
-  contain: layout style paint;
+
+@keyframes image-drift {
+  from {
+    translate: 0 6%;
+    scale: 1.16;
+  }
+  to {
+    translate: 0 -6%;
+    scale: 1.16;
+  }
 }
-.work-card .media > * {
-  pointer-events: none;
+
+@keyframes connected-arrives {
+  from {
+    opacity: 0;
+    translate: 0 12px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
 }
-@media (any-hover: hover) and (any-pointer: fine) {
-  .work-cursor.active {
+
+@keyframes thinking-opens {
+  from {
+    clip-path: inset(-20% 100% -20% 0);
+  }
+  to {
+    clip-path: inset(-20% -2% -20% 0);
+  }
+}
+
+@keyframes thinking-emerges {
+  from {
+    transform: translateX(-0.85em);
+    opacity: 0;
+  }
+  24% {
+    opacity: 1;
+  }
+  to {
+    transform: translateX(0);
     opacity: 1;
   }
 }

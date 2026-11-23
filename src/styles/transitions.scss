@@ -1,40 +1,54 @@
-/* A charcoal curtain drops over the outgoing page, then lifts from the next. */
-html::before {
-  content: '';
-  position: fixed;
-  inset: -2px;
-  z-index: 10000;
-  background: #151719;
-  pointer-events: none;
-  visibility: hidden;
-  clip-path: inset(0 0 102%);
+// Page transitions (public/transitions.js): a charcoal curtain drops over the
+// outgoing page, then lifts from the next.
+
+@use 'media' as *;
+
+html {
+  &::before {
+    content: '';
+    position: fixed;
+    inset: -2px;
+    z-index: 10000;
+    background: #151719;
+    pointer-events: none;
+    visibility: hidden;
+    clip-path: inset(0 0 102%);
+  }
+
+  &.page-leaving::before,
+  &.page-entering::before {
+    visibility: visible;
+  }
+
+  @media #{$motion} {
+    &.page-leaving::before {
+      pointer-events: auto;
+      animation: phoenix-curtain-drop 0.54s cubic-bezier(0.87, 0, 0.13, 1) both;
+    }
+
+    &.page-entering::before {
+      animation: phoenix-curtain-rise 0.52s cubic-bezier(0.87, 0, 0.13, 1) both;
+    }
+  }
 }
-html.page-leaving::before,
-html.page-entering::before {
-  visibility: visible;
-}
-@media (prefers-reduced-motion: no-preference) {
-  html.page-leaving::before {
-    pointer-events: auto;
-    animation: phoenix-curtain-drop 0.54s cubic-bezier(0.87, 0, 0.13, 1) both;
-  }
-  html.page-entering::before {
-    animation: phoenix-curtain-rise 0.52s cubic-bezier(0.87, 0, 0.13, 1) both;
-  }
-  .page-title {
-    animation-delay: var(--page-intro-delay, 0s);
-  }
+
+// Offset the intro animations by --page-intro-delay (set by public/transitions.js).
+@media #{$motion} {
+  .page-title,
   .hero-connected {
     animation-delay: var(--page-intro-delay, 0s);
   }
+
   .hero-thinking,
   .hero-thinking > span {
     animation-delay: calc(0.5s + var(--page-intro-delay, 0s));
   }
+
   .intro-copy {
     animation-delay: calc(1.12s + var(--page-intro-delay, 0s));
   }
 }
+
 @keyframes phoenix-curtain-drop {
   from {
     clip-path: inset(0 0 102%);
@@ -43,6 +57,7 @@ html.page-entering::before {
     clip-path: inset(0 0 -2px);
   }
 }
+
 @keyframes phoenix-curtain-rise {
   from {
     clip-path: inset(0);

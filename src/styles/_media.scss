@@ -1,0 +1,11 @@
+// Shared media queries. Use with `@media #{$mobile} { … }`.
+
+$mobile: '(max-width: 700px)';
+$desktop: '(min-width: 701px)';
+$wide: '(min-width: 1600px)';
+
+$motion: '(prefers-reduced-motion: no-preference)';
+$reduced-motion: '(prefers-reduced-motion: reduce)';
+
+// A mouse or trackpad (not touch only).
+$fine-hover: '(any-hover: hover) and (any-pointer: fine)';

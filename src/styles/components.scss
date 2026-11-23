@@ -1,9 +1,10 @@
 // Layout for the components reference page (components.html).
 // The components themselves are styled by site.scss and pages.scss.
 
+@use 'media' as *;
+
 $stage-bg: #2c3236;
 $radius: 8px;
-$mobile: 700px;
 
 .kit-title {
   font-size: clamp(40px, 5.5vw, 80px);
@@ -26,6 +27,10 @@ $mobile: 700px;
   padding-block: 56px;
   border-top: 1px solid var(--rule);
   scroll-margin-top: 16px;
+
+  @media #{$mobile} {
+    padding-block: 40px;
+  }
 }
 
 .kit-head {
@@ -100,28 +105,12 @@ $mobile: 700px;
     min-height: 300px;
     align-content: start;
   }
-}
 
-.kit-pointer {
-  color: #ced4da;
-  font-weight: 600;
-}
-
-// Remove page-level spacing from components shown out of context.
-.kit-flat {
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  border: 0;
-}
-
-.kit-stage {
+  // Remove page-level spacing from components shown out of context.
   > .intro {
     padding: 0;
   }
-  > .services {
-    width: 100%;
-  }
+  > .services,
   > .project-overview,
   > .map-link,
   > .clients,
@@ -136,6 +125,23 @@ $mobile: 700px;
   > .footer-links {
     grid-template-columns: 1fr;
   }
+
+  @media #{$mobile} {
+    padding: 20px;
+  }
+}
+
+.kit-pointer {
+  color: #ced4da;
+  font-weight: 600;
+}
+
+// A component shown without its page-level spacing.
+.kit-flat {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
 }
 
 .kit-media {
@@ -148,13 +154,4 @@ $mobile: 700px;
   width: 100%;
   max-width: 560px;
   gap: 24px;
-}
-
-@media (max-width: $mobile) {
-  .kit-section {
-    padding-block: 40px;
-  }
-  .kit-stage {
-    padding: 20px;
-  }
 }
