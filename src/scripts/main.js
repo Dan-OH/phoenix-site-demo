@@ -15,6 +15,7 @@ import { initNavUnderline } from './components/nav-underline.js';
 import { initEnquiryForm, initOfficeMap, initProjectOverview } from './components/page-extras.js';
 import { initPointerHover } from './components/pointer-hover.js';
 import { initReveal } from './components/reveal.js';
+import { initServicesBlob } from './components/services-blob.js';
 import { initWorkCursor } from './components/work-cursor.js';
 import { initWorkFilters } from './components/work-filters.js';
 import { initWorkPreviews } from './components/work-previews.js';
@@ -34,6 +35,7 @@ initWorkPreviews();
 initWorkCursor();
 initClientTicker();
 initHeroReel();
+initServicesBlob();
 
 // Page-specific
 initWorkFilters();
