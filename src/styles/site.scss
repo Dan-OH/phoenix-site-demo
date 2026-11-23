@@ -540,7 +540,8 @@ img {
   display: inline-block;
 
   @media #{$motion} {
-    animation: connected-arrives 0.55s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+    animation: connected-arrives 0.55s cubic-bezier(0.2, 0.7, 0.3, 1)
+      var(--page-intro-delay, 0s) both;
   }
 }
 
@@ -552,15 +553,16 @@ img {
   margin: -0.04em -0.06em -0.12em -0.015em;
 
   @media #{$motion} {
-    animation: thinking-opens 0.95s cubic-bezier(0.22, 0.75, 0.25, 1) 0.5s both;
+    animation: thinking-opens 0.95s cubic-bezier(0.22, 0.75, 0.25, 1)
+      calc(0.5s + var(--page-intro-delay, 0s)) both;
   }
 
   > span {
     display: inline-block;
 
     @media #{$motion} {
-      animation: thinking-emerges 0.95s cubic-bezier(0.22, 0.75, 0.25, 1) 0.5s
-        both;
+      animation: thinking-emerges 0.95s cubic-bezier(0.22, 0.75, 0.25, 1)
+        calc(0.5s + var(--page-intro-delay, 0s)) both;
     }
   }
 }
@@ -597,7 +599,8 @@ img {
   }
 
   @media #{$motion} {
-    animation: arrive 0.95s cubic-bezier(0.2, 0.72, 0.25, 1) 1.12s both;
+    animation: arrive 0.95s cubic-bezier(0.2, 0.72, 0.25, 1)
+      calc(1.12s + var(--page-intro-delay, 0s)) both;
   }
   @media #{$mobile} {
     grid-template-columns: 1fr;
