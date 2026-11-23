@@ -1,9 +1,10 @@
-// Custom cursor over work cards (mouse only). One stable cursor layer avoids
-// the native image cursor resetting while GIFs play underneath it.
+// Cursor icon over work cards (mouse only). It follows the pointer, sitting
+// below and to the right of the native cursor, which stays visible. One stable
+// layer avoids the icon resetting while GIFs play underneath it.
 
 import { finePointer } from '../lib/media-queries.js';
 
-const CURSOR_OFFSET = 24; // half the cursor's size, so it's centred on the pointer
+const CURSOR_OFFSET = 10; // px down and right of the pointer, clear of the native cursor
 
 export function initWorkCursor() {
   const cards = document.querySelectorAll('a.work-card');
@@ -22,21 +23,23 @@ export function initWorkCursor() {
 
   function hide() {
     cursor.classList.remove('active');
-    document.documentElement.classList.remove('work-cursor-active');
   }
 
   document.addEventListener(
     'pointermove',
     (event) => {
-      if (!finePointer.matches || event.pointerType !== 'mouse' || !event.target.closest('a.work-card')) {
+      if (
+        !finePointer.matches ||
+        event.pointerType !== 'mouse' ||
+        !event.target.closest('a.work-card')
+      ) {
         hide();
         return;
       }
       x = event.clientX;
       y = event.clientY;
-      cursor.style.transform = `translate3d(${x - CURSOR_OFFSET}px, ${y - CURSOR_OFFSET}px, 0)`;
+      cursor.style.transform = `translate3d(${x + CURSOR_OFFSET}px, ${y + CURSOR_OFFSET}px, 0)`;
       cursor.classList.add('active');
-      document.documentElement.classList.add('work-cursor-active');
     },
     { passive: true },
   );
